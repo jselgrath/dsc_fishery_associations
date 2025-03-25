@@ -10,8 +10,14 @@ library(tidyverse)
 remove(list=ls())
 setwd("C:/Users/jennifer.selgrath/Documents/research/R_projects/dsc_associations_fishery/")
 
-
+#data
 d1<-read_csv("./results/association_long.csv")%>%
+  glimpse()
+
+# reference info
+d4<-read_csv("./data/table_S1_fishtix_assoc_20240724.csv")%>%
+  select(species_name:association_references)%>%
+  select(-depth_range)%>%
   glimpse()
 
 # Table S1
@@ -38,6 +44,15 @@ d2%>%
   filter(group=="Fish" & assoc_body_length2=="No Data"& assoc_proximity2=="Associated")
 
 
+glimpse(d4)
+
+d5<-d1%>%
+  left_join(d4)%>%
+  arrange(Group,species_name,common_name)%>%
+  select(Group,"Common Name" ="common_name",Genus=genus,Species=species,"Min Depth (m)"= "depth_range_shallow_m", "Max Depth (m)"=depth_range_deep_m, "Body Length"="assoc_body_length2", "Proximity"="assoc_proximity2","Habitat and Depth"=assoc_hab,Habitat=habitat, References="association_references")%>%
+  glimpse()
+d5
+
 # save
-write_csv(d2,"./doc/table_s1.csv")
+write_csv(d5,"./doc/table_s1.csv") # note: will need to manually fix some depths due to excel errors
 write_csv(d3,"./doc/table_1.csv")

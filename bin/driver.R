@@ -14,7 +14,7 @@ setwd("C:/Users/jennifer.selgrath/Documents/research/R_projects/dsc_associations
 
 # upload, remove extra columns, remove freshwater spp
 source("./bin/1_clean_files.R")
-# input:    ./data/fishtix_assoc_20240205.csv
+# input:    ./data/fishtix_assoc_20240520.csv
 # output:   ./results/fishtix_assoc_clean.csv
 #           ./results/fishtix_assoc_clean_no_fresh.csv
 
@@ -31,12 +31,13 @@ source("./bin/fun_facts_assoc2_graph.R")
 # input:    ./doc/association_long.csv
 # output:   
 
+# used in text of results
 source("./bin/summary_stats.R")
 # input:    ./doc/association_fun_facts2.csv
 # output:   ./doc/assoc_bl_prox.csv
 #           ./doc/assoc_hab.csv
 
-#graph reference types used in analysis
+#Fig 4.  reference types used in analysis
 source("./bin/figx_reference_type.R")
 # input:    
 # output:   

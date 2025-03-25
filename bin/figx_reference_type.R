@@ -11,13 +11,18 @@ remove(list=ls())
 setwd("C:/Users/jennifer.selgrath/Documents/research/R_projects/dsc_associations_fishery/")
 
 # ---------------------------------------
-#from: https://docs.google.com/spreadsheets/d/1ydQ5N2b294E1dQAp_M_Jj8mqKsB-awVxs0iBDx3Zy7g/edit#gid=444082964
+#datafrom: https://docs.google.com/spreadsheets/d/1ydQ5N2b294E1dQAp_M_Jj8mqKsB-awVxs0iBDx3Zy7g/edit#gid=444082964  sheet = Table S2
 
-d1<-read_csv("./data/reference_type_20240605.csv")%>%glimpse()
+d1<-read_csv("./data/table_s2_20240724.csv")%>%
+  glimpse()
+
+d2<-d1
+d2$type[d2$type=="Thesis"]<-"Other"
+  
 
 source("./bin/deets.R")
 
-ggplot(d1,aes(x=type))+geom_bar()+
+ggplot(d2,aes(x=type))+geom_bar()+
   xlab("Type of Reference")+
   ylab("Number")+
   deets6

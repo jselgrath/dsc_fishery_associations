@@ -32,15 +32,27 @@ d3a<-d1%>%
 unique(d3a$species_group2)
 
 # remove algae
-d3<-d3a%>%
+d3b<-d3a%>%
   filter(species_name!="Agar"& species_name!="Algae marine" & species_name!="Kelp giant")%>%
   glimpse()
+
+#remove roe
+d3<-d3b%>%
+  filter(species_name!="Herring Pacific - roe"& species_name!="Herring Pacific - roe on kelp")%>%
+  glimpse()
+
+
+view(d3b)
+
+
 
 d3$assoc_habitat[d3$assoc_habitat=="?"]<-999
 d3$assoc_habitat<-as.numeric(d3$assoc_habitat)
 
 
 unique(d3$species_group2)
+
+
 
 
 
