@@ -11,19 +11,21 @@ remove(list=ls())
 setwd("C:/Users/jennifer.selgrath/Documents/research/R_projects/dsc_associations_fishery/")
 
 
-d1<-read_csv("./doc/association_fun_facts2.csv")%>%
+d1<-read_csv("./doc/association_fun_facts3.csv")%>%
   arrange(group)%>%
-  mutate(assoc_general_n=assoc_prox_n)%>%
-  mutate(assoc_adjacent_n=assoc_body_n)%>%
-  select(-assoc_body_n)%>%
+  mutate(assoc_general_n=general_prox_n)%>%
+  mutate(assoc_adjacent_n=adjacent_n)%>%
+  # select(-assoc_body_n)%>%
+  arrange(group,association)%>%
   glimpse()
 d1
 
+# ----------------------------------------------
 # adjacent (body) and general (prox) -----------------------------
 d2_b<-d1%>%
   select(group,association,assoc_adjacent_n,assoc_general_n)%>%
   # filter(association!="Multispecies Group")%>%
-  filter(association!="Definite Association" & association!="Probable Association")%>%
+  filter(association!="Definite association" & association!="Probable association")%>%
   arrange(group)%>%
   glimpse()
 d2_b
@@ -33,7 +35,7 @@ d2_b
 d3_b<-d2_b%>%
   group_by(group)%>%
   summarize(
-    taxa_n=sum(assoc_general_n))%>% # same for body and prox
+    taxa_n=sum(assoc_general_n, na.rm=T))%>% # same for body and prox
   glimpse()
 
 
@@ -62,12 +64,12 @@ d6_b<-d5_b%>%
   glimpse()
 
 
-
+# ----------------------------------------------
 # habtiat -----------------------------
 d2_h<-d1%>%
   select(group,association,assoc_hab_n)%>%
   # filter(association!="Multispecies Group")%>%
-  filter(association!="Associated"& association!="No Data")%>%
+  filter(association!="Associated"& association!="No data")%>%
   arrange(group)%>%
   glimpse()
 d2_h
@@ -77,9 +79,9 @@ d2_h
 d3_h<-d2_h%>%
   group_by(group)%>%
   summarize(
-    taxa_n=sum(assoc_hab_n))%>% # same for adjacent and prox
+    taxa_n=sum(assoc_hab_n, na.rm=T))%>% # same for adjacent and prox
   glimpse()
-
+d3_h
 
 # calculate percentages   
 d4_h<-full_join(d2_h,d3_h)%>%
@@ -91,10 +93,12 @@ d5_h<-d4_h%>%
   group_by(association)%>%
   summarize(
     assoc_hab_n=sum(assoc_hab_n),
-    taxa_n=sum(taxa_n))%>%
+    taxa_n=sum(taxa_n, na.rm=T))%>%
   mutate(assoc_hab_p=round(assoc_hab_n/taxa_n,3))%>%
   mutate(group="all")%>%
   glimpse()
+
+d5_h
 
 # combine
 d6_h<-d5_h%>%
@@ -104,8 +108,8 @@ d6_h<-d5_h%>%
 
 
 # save
-write_csv(d4_b,"./doc/assoc_bl_prox.csv")
-write_csv(d6_b,"./doc/assoc_bl_prox_all.csv")
+write_csv(d4_b,"./doc/assoc_adj_prox.csv")
+write_csv(d6_b,"./doc/assoc_adj_prox_all.csv")
 write_csv(d4_h,"./doc/assoc_hab.csv")
 write_csv(d6_h,"./doc/assoc_hab_all.csv")
 
