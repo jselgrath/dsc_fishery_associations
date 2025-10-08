@@ -15,7 +15,7 @@ d1<-read_csv("./results/association_long.csv")%>%
   glimpse()
 
 # reference info
-d4<-read_csv("./data/table_S1_fishtix_assoc_20240724.csv")%>%
+d4<-read_csv("table_s1_20250327_onlylandedspp.csv")%>%
   select(species_name:association_references)%>%
   select(-depth_range)%>%
   glimpse()
@@ -54,5 +54,5 @@ d5<-d1%>%
 d5
 
 # save
-write_csv(d5,"./doc/table_s1.csv") # note: will need to manually fix some depths due to excel errors
+# write_csv(d5,"./doc/table_s1.csv") # note: will need to manually fix some depths due to excel errors - now using updted table s1 to populate this
 write_csv(d3,"./doc/table_1.csv")

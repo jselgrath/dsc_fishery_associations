@@ -14,44 +14,52 @@ setwd("C:/Users/jennifer.selgrath/Documents/research/R_projects/dsc_associations
 # combine fish ticket data from 2025 agreement
 source("./bin/landed_sp_2010_2024.R")
 # input:    C:/Users/jennifer.selgrath/Documents/research/R_projects/dsc_associations_fishery/data/MLDS_2025/.....csv  (Fishtix 2010-2020)
-# output:   ./results/fishtix_spp_2010_2024.csv
-#           ./results/fishtix_spp_2010_2024_landing_no.csv
+# output:   ./results/fishtix_spp_2010_2024.csv             # species list
+#           ./results/fishtix_spp_2010_2024_landing_no.csv  # number of landings in each category
+
 
 # landing category record numbers and remove fresh, algae, eggs/roe
 source("./bin/organize_fish_ticket_data.R")
-# output:   ./results/lc_record_no.csv
+# input:    ./data/dsc_val_associations_freshwater2.csv
+#           ./results/fishtix_spp_2010_2024_landing_no.csv
+# output:   ./results/lc_record_no_fresh.csv
 
-# upload, remove extra columns, remove freshwater spp
-source("./bin/1_clean_files.R")
+
+# upload, remove extra columns
+source("./bin/clean_files.R")
 # input:    ./data/fishtix_assoc_20240520.csv
 # output:   ./results/fishtix_assoc_clean_no_fresh.csv
-#           ./results/fishtix_assoc_clean.csv
+#           ./doc/fishtix_landings_by_group.csv  # results for first paragraph of results section
 
 
 # summary statistics for association measures by type of catch (e.g., invert), remove algae
-source("./bin/fun_facts_assoc3.R") # use 2 version from google drive for older code
+source("./bin/summary_stats1.R") # use 2 version from google drive for older code
 # input:    ./results/fishtix_assoc_clean_no_fresh.csv
-#           ./results/data_species_group2.csv
-# output:   ./doc/association_fun_facts2.csv # fish, invert, algae
-#           ./doc/association_fun_facts2_v2.csv # econ groups - DO NOT USE
-#           ./doc/association_long.csv
-
-
-# graph of associations
-source("./bin/fun_facts_assoc2_graph.R")
-# input:    ./doc/association_long.csv
-# output:   
+#           ./results/data_species_group3.csv
+# output:   ./doc/association_long.csv
+#           ./doc/association_fun_facts3.csv # fish, invert
+#           ./doc/association_fun_facts_habitat.csv # econ groups - DO NOT USE
+#           ./results/association_fun_facts2_v3.csv
 
 # used in text of results
-source("./bin/summary_stats.R")
+source("./bin/summary_stats2.R")
 # input:    ./doc/association_fun_facts2.csv
 # output:   ./doc/assoc_bl_prox.csv
 #           ./doc/assoc_hab.csv
 
+# graph of associations - now figures 3 & 4
+source("./bin/fig3_graph.R")
+# input:    ./doc/association_long.csv
+# output:   ./doc/fig3_adjacent.tiff
+#           ./doc/fig3_prox.tiff
+#           ./doc/fig3_hab.tiff
+
+
 #Fig 4.  reference types used in analysis
-source("./bin/figx_reference_type.R")
-# input:    
-# output:   
+source("./bin/figS1_reference_type.R")
+# input:    ./data/table_s2_20250327.csv
+# output:   fig_s1_reference_type.tiff
+
 
 # Tables
 source("./bin/table_s1_and_table_1.R")
@@ -59,9 +67,20 @@ source("./bin/table_s1_and_table_1.R")
 # output:   ./doc/table_s1.csv
 #           ./doc/table_1.csv
 
-# input:    
-# output:   
 
-# input:    
-# output:   
+# gear analysis step1
+source("./bin/gear_landed_sp_2010_2024.R")
+# input:    C:/Users/jennifer.selgrath/Documents/research/R_projects/dsc_associations_fishery/data/MLDS_2025/.....csv  (Fishtix 2010-2020)
+# output:   ./results/gear_fishtix_spp_2010_2024.csv             # species list with gear info etc
+
+# remove freshwater spp
+source("./bin/gear_no_fresh.R")
+# input:  ./results/fishtix_spp_2010_2024_gear.csv
+#         ./data/dsc_val_associations_freshwater2.csv
+# output  ./results/gear_fishtix_spp_2010_2024_no_fresh.csv
+
+
+# summarize gears 
+source("./bin/gear_summary.R")
+#input: ./results/fishtix_spp_2010_2024_gear_no_fresh.csv
 

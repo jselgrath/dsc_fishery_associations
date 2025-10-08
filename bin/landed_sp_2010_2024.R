@@ -2,7 +2,7 @@
 # NOAA CINMS
 # Deep Sea Coral Valuation
 
-# goal: identify species that were landed  by commercial fisheries in ca 2010-2020
+# goal: identify species that were landed  by commercial fisheries in ca 2010-2024
 
 # ---------------------------------------------------
 library(tidyverse)
@@ -61,17 +61,19 @@ d20<-rbind(d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14)%>%
   mutate(species_name=str_squish(SpeciesName))%>%
   mutate(species_id=str_squish(SpeciesID))%>%
   select(-SpeciesName,-SpeciesID)%>%
+  # unique()%>% # removes duplicate entries
   glimpse()
 
 # estimate of unique spp from all years (2010-2024)
 length(unique(d20$species_id))%>% 
-  glimpse() # 329 (was 327 with original version of  data)
+  glimpse() # 342 - including non-marine landing categories
+
 
 # unique names and IDs for all species
 # remove pii etc
 d21<-d20%>%
   select(species_id,species_name)%>%
-  unique()%>%
+  unique()%>% 
   arrange(species_id)%>%
   glimpse()
 
