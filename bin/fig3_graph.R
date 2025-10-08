@@ -92,7 +92,7 @@ g1_b<-ggplot(d1_b,aes(x=adjacent3, fill=Group))+geom_bar(position = position_dod
   ylab("Number of Taxa")+
   deets6
 g1_b
-ggsave("./doc/g_assoc_adjacent.tiff",width=5.5, height=3.5) 
+ggsave("./doc/fig3_adjacent.tiff",width=5.5, height=3.5) 
 
 # proximity
 g1_p<-ggplot(d1_p,aes(x=assoc_proximity3, fill=Group))+geom_bar(position = position_dodge2(preserve = "single"))+
@@ -101,7 +101,7 @@ g1_p<-ggplot(d1_p,aes(x=assoc_proximity3, fill=Group))+geom_bar(position = posit
   ylab("Number of Taxa")+
   deets6
 g1_p
-ggsave("./doc/g_assoc_prox.tiff",width=5.5, height=3.5) 
+ggsave("./doc/fig3_prox.tiff",width=5.5, height=3.5) 
 
 # habitat
 g1_h<-ggplot(d1_h,aes(x=assoc_habitat3, fill=Group))+geom_bar(position = position_dodge2(preserve = "single"))+
@@ -110,4 +110,4 @@ g1_h<-ggplot(d1_h,aes(x=assoc_habitat3, fill=Group))+geom_bar(position = positio
   ylab("Number of Taxa")+
   deets6
 g1_h
-ggsave("./doc/g_assoc_hab.tiff",width=5.5, height=3.5) 
+ggsave("./doc/fig3_hab.tiff",width=5.5, height=3.5) 

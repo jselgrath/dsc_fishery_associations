@@ -13,20 +13,37 @@ setwd("C:/Users/jennifer.selgrath/Documents/research/R_projects/dsc_associations
 # ---------------------------------------
 # final assoc table - updated with 2024 data 
 d00<-read_csv("./data/table_s1_20250327_onlylandedspp.csv")%>% #table_s1_20250325
+  filter(genus!="Nezumia")%>%  # removing two species of grenadier because they all share one landing code and it messes up the estimates
   select(-references)%>%
+  arrange(species_id)%>%
+  glimpse()
+
+# d00%>%
+#   filter(species_id==180)
+
+# view(d00)
+
+# check duplicates - 3 sp of greanadier share one code (now removing above)
+d00%>%
+  group_by(species_id)%>%
+  summarize(n=n())%>%
+  filter(n>1)%>%
   glimpse()
 
 
 # data from CDFW from 2025 DSA - no fresh, algae, roe/eggs
 d000<-read_csv("./results/lc_record_no.csv")%>% # 
-  select(-species_name)%>%
+  # select(-species_name)%>%
   glimpse()
+
+d000%>%
+  summarize(n=sum(n_landings))
 
 
 d1<-d00%>%
-  left_join(d000)%>% # ones that do not match are (1) freshwater and salmon roe which are excluded OR (2) older species which made it into the list but are not currently caught.
-  # unique()%>%
-  # select(-new)%>%
+  left_join(d000)%>% 
+  unique()%>%
+  # filter(!is.na(n_landings))%>%
   glimpse()
 #
 # view(d1)

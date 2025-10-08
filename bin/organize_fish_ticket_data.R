@@ -15,6 +15,9 @@ setwd("C:/Users/jennifer.selgrath/Documents/research/R_projects/dsc_associations
 d0<-read_csv("./data/dsc_val_associations_freshwater2.csv")%>%
   glimpse()
 
+# d0%>%
+#   filter(species_id==180)
+
 
 # final assoc table - updated with 2024 data 
 d1<-read_csv("./results/fishtix_spp_2010_2024_landing_no.csv")%>% #table_s1_20250325
@@ -30,6 +33,9 @@ d2<-d1%>%
 
 d2
 
+# d2%>%
+#   filter(species_id==180)
+
 
 #remove freshwater spp
 d3<-d0%>%
@@ -44,4 +50,8 @@ d3<-d0%>%
   glimpse()
 
 
+# d3%>%
+#   filter(species_id==453)
+
+# -----------------
 write_csv(d3,"./results/lc_record_no.csv")
