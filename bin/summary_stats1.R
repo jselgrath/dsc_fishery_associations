@@ -76,7 +76,7 @@ d3%>%
 # ------------------------------------------------
 # summarize by species group2-----------------------
 
-# adjacent
+#  -- adjacent ----------------------------------
 d4<-d3%>%
   group_by(adjacent,group)%>%
   summarize(
@@ -88,7 +88,22 @@ d4<-d3%>%
 
 d4
 
-# general proximity
+# adjacent - pivot for X2 to wide contingency table
+d4_c <- d4 %>%
+  pivot_wider(
+    names_from = group,
+    values_from = adjacent_n,
+    values_fill = 0
+  ) %>%
+  column_to_rownames("association")
+
+d4_c
+
+# adjacent - X2
+chisq.test(d4_c)
+
+
+# -- general proximity ----------------------------------
 d5<-d3%>%
   group_by(general_prox,group)%>%
   summarize(
@@ -99,7 +114,23 @@ d5<-d3%>%
   glimpse()
 d5
 
-#habitat
+# gp - pivot for X2 to wide contingency table
+d5_c <- d5 %>%
+  pivot_wider(
+    names_from = group,
+    values_from = general_prox_n,
+    values_fill = 0
+  ) %>%
+  column_to_rownames("association")
+
+d5_c
+
+# gp - X2
+chisq.test(d5_c)
+
+
+
+# -- habitat ----------------------------
 d6<-d3a%>%
   group_by(assoc_habitat2,group)%>%
   summarize(
@@ -110,7 +141,24 @@ d6<-d3a%>%
   glimpse()
 d6
 
-# merge
+
+# adjacent - pivot for X2 to wide contingency table
+d6_c <- d6 %>%
+  pivot_wider(
+    names_from = group,
+    values_from = assoc_hab_n,
+    values_fill = 0
+  ) %>%
+  column_to_rownames("association")
+
+d6_c
+
+# habitat - X2
+chisq.test(d6_c)
+
+
+
+# -- merge ---------------------
 # note there are two types of association metrics, here lumped together
 d7<-d4%>%
   full_join(d5)%>%
@@ -136,6 +184,101 @@ d7%>%
     assoc_tot=sum(adjacent_n,na.rm=T)
   )%>%
   glimpse()
+
+
+# -- compare associated counts among metrics - combine def and prob assoc
+d8<-d7%>%
+  # Replace NA with 0 for numeric columns
+  mutate(across(c(adjacent_n, general_prox_n, assoc_hab_n), ~replace_na(., 0))) %>%
+  
+  # Collapse categories
+  mutate(association_collapsed = case_when(
+    association %in% c("Definite association","Probable association") ~ "Associated", # change def and/or prob assoc here
+    TRUE ~ association
+  )) %>%
+  
+  # Sum values within each group × collapsed association (new syntax)
+  group_by(group, association_collapsed) %>%
+  summarize(
+    across(c(adjacent_n, general_prox_n, assoc_hab_n), \(x) sum(x, na.rm = TRUE)),
+    .groups = "drop"
+  ) %>%
+  
+  # Rename for clarity
+  rename(association = association_collapsed) %>%
+  arrange(group, association)
+
+
+
+# -- filter for only assoc or non-assoc --------
+d8a<-d8%>%
+  filter(association=="Associated" | association=="Not associated")
+
+# not separated by taxon
+d8b <- d8a %>%
+  filter(association %in% c("Associated", "Not associated")) %>%
+  group_by(association) %>%
+  summarize(
+    across(c(adjacent_n, general_prox_n, assoc_hab_n), sum, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+d8b
+
+
+
+# -- make contingency tables -----------------
+# all
+all_tab <- d8b %>%
+  column_to_rownames("association")
+
+
+
+# Fish table
+fish_tab <- d8a %>%
+  filter(group == "Fish") %>%
+  select(association, adjacent_n, general_prox_n, assoc_hab_n) %>%
+  column_to_rownames("association")%>%
+  glimpse()
+
+
+# Invertebrate table
+invert_tab <- d8a %>%
+  filter(group == "Invertebrate") %>%
+  select(association, adjacent_n, general_prox_n, assoc_hab_n) %>%
+  column_to_rownames("association")
+
+all_tab
+fish_tab
+invert_tab
+
+# Chi-square test: do the three measures differ in distribution (within fish)?
+chisq_all<- chisq.test(all_tab)
+chisq_fish <- chisq.test(fish_tab)
+chisq_invert <- chisq.test(invert_tab)
+
+chisq_all
+chisq_fish
+chisq_invert
+
+# which results differ the most - Large residuals (> |2|) indicate that a specific measure (e.g., assoc_hab_n) diverges from the others.
+chisq_fish$stdres
+chisq_invert$stdres
+
+
+# quick visual
+d8a%>%
+  pivot_longer(cols = c(adjacent_n, general_prox_n, assoc_hab_n),
+               names_to = "measure", values_to = "count") %>%
+  ggplot(aes(x = measure, y = count, fill = association)) +
+  geom_bar(stat = "identity", position = "fill") +
+  facet_wrap(~ group) +
+  theme_minimal() +
+  labs(title = "Comparison of association measures for Associated vs Not associated",
+       y = "Proportion", x = "Measure")
+
+
+
 
 
 
@@ -178,11 +321,12 @@ d16<-d3a%>%
 d17<-d14%>%
   full_join(d15)%>%
   full_join(d16)%>%
-  # select(SpeciesGroup,association,assoc_body_n,assoc_prox_n,assoc_hab_n)%>%
+  select(SpeciesGroup,association,assoc_body_n,assoc_prox_n,assoc_hab_n)%>%
   # mutate(Association=if_else(is.na(association),"No Data",
   #                            if_else(association==1,"Associated","Not Associated")))%>%
   # mutate(Association_Prob=if_else(association==0,Association,
   #                                 if_else(association==1,"Probable Association", "Definite Association")))%>%
+  arrange(association,-assoc_body_n)%>%
   glimpse()
 
 d17
@@ -199,5 +343,5 @@ write_csv(d7,"./doc/association_fun_facts3.csv")
 write_csv(d6,"./doc/association_fun_facts_habitat.csv")
 
 # other groups
-write_csv(d17,"./results/association_fun_facts2_v3.csv")
+write_csv(d17,"./doc/association_fun_facts2_v3.csv")
 
