@@ -82,5 +82,16 @@ source("./bin/gear_no_fresh.R")
 
 # summarize gears 
 source("./bin/gear_summary.R")
-#input: ./results/fishtix_spp_2010_2024_gear_no_fresh.csv
+# input: ./results/fishtix_spp_2010_2024_gear_no_fresh.csv
+# output: ./doc/gear_landing_category_wide_20251008.csv
+#         ./doc/gear_group_landing_category_wide_20251008.csv
+
+# gears related to associated species
+source("./bin/sfi_assoc_gears.R")
+# input:  ./results/association_long.csv
+#         ./results/trip_tix_ca_with_groups.csv
+# output: ./results/gear_species_number.csv
+#         ./results/gear_top_species_number.csv
+#         ./results/species_gear_number.csv
+
 
